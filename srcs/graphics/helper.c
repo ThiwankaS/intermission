@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 01:59:36 by tsomacha          #+#    #+#             */
-/*   Updated: 2025/07/10 01:59:38 by tsomacha         ###   ########.fr       */
+/*   Updated: 2025/07/10 02:42:46 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ t_intersections	*intersections_sort(t_intersections *xs)
 
 void	free_intersections(t_intersections *xs)
 {
-	t_intersections *current;
-	t_intersections *temp;
+	t_intersections	*current;
+	t_intersections	*temp;
 
 	current = xs;
 	while (current)
