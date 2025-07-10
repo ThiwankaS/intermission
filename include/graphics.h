@@ -12,6 +12,13 @@ typedef struct s_material
 	t_tuple *color;
 } t_material;
 
+typedef struct s_light
+{
+	t_tuple color;
+	t_tuple position;
+} t_light;
+
+
 typedef struct s_object
 {
 	float x;
