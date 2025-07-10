@@ -53,7 +53,7 @@ void lighting(t_tuple *out, t_material *m, t_light *light, t_tuple *position, t_
 	float reflect_dot_eye;
 	float factor;
 
-	schur_product(&effective_color, m->color, &light->color);
+	schur_product(&effective_color, &m->color, &light->color);
 	tuple_subtract(&temp, &light->position, position);
 	normalize(&lightv, &temp);
 	tuple_multiply_scalor(&ambient, &effective_color, m->ambient);

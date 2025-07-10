@@ -3,10 +3,34 @@
 # define WIDTH  1600
 # define HEIGHT 1200
 
+float get_value(t_intersect *xs)
+{
+	float value = 0.0;
+	if(xs)
+	{
+		if(xs[0].value > 0)
+			value = xs[0].value;
+		if(xs[1].value > 0)
+		{
+			if(xs[0].value > xs[1].value)
+				value = xs[1].value;
+		}
+	}
+	return value;
+}
+
+uint32_t tuple_to_color(t_tuple *tp)
+{
+	uint8_t red   = (uint8_t)(tp->t[0] * 255.0f);
+	uint8_t green = (uint8_t)(tp->t[1] * 255.0f);
+	uint8_t blue  = (uint8_t)(tp->t[2] * 255.0f);
+	uint8_t alpha = (uint8_t)(tp->t[3] * 255.0f);
+
+	return ((red << 24) | (green << 16) | (blue << 8) | alpha);
+}
+
 int main(void)
 {
-	uint32_t color = 0xFF0000FF;
-
 	// Create window and image
 	mlx_t *mlx = mlx_init(WIDTH, HEIGHT, "My Window", true);
 	if (!mlx)
@@ -26,10 +50,17 @@ int main(void)
 	int width = 300, height = 300;
 	float pixel_size = wall_size / width;
 
+	t_material mat;
+	mat.ambient = 0.1;
+	mat.diffiuse = 0.9;
+	mat.specular = 0.9;
+	mat.shininess = 200.0;
+	color(&mat.color, 1.0, 1.0, 1.0);
+
 	//seting up the sphere
 	t_object s;
 	s.id = 1;
-	s.material = NULL;
+	s.material = &mat;
 	s.radius = 1.0;
 	s.type = 1;
 	s.x = 0.0;
@@ -42,7 +73,12 @@ int main(void)
 	t_ray r;
 	point(&r.origin, light_x, light_y, light_z);
 
-	t_tuple p, temp;
+	t_light light;
+	color(&light.color, 1.0, 1.0, 1.0);
+	point(&light.position, -10, 10, -10);
+
+
+	t_tuple p, temp, colour, p1, normal, eye;
 	t_intersect xs[2];
 
 	for(int y = 0; y < (height -1); y++)
@@ -55,7 +91,13 @@ int main(void)
 			tuple_subtract(&temp, &p, &r.origin);
 			normalize(&r.direction, &temp);
 			if(cal_intersects(&s, &r, xs) && (xs[0].value >= 0 || xs[1].value >= 0))
-				mlx_put_pixel(img, x, y, color);
+			{
+				position(&p1, &r, get_value(xs));
+				normal_at(&normal, &s, &p1);
+				tuple_negate(&eye, &r.direction);
+				lighting(&colour, s.material, &light, &p1, &eye, &normal);
+				mlx_put_pixel(img, x, y, tuple_to_color(&colour));
+			}
 		}
 	}
 	// Keep window open
