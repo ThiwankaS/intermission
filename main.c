@@ -177,11 +177,11 @@ int main(void)
 	color(&world.light.color, 1.0f, 1.0f, 1.0f);
 	world.components = s1;
 
-	t_camera *camera = camera_init(100, 50, M_PI / 3);
+	t_camera *camera = camera_init(WIDTH, HEIGHT, M_PI / 3);
 	t_tuple from, to, up;
-	point(&from, 0.0f, 0.0f, 0.0f);
-	point(&to, 0.0f, 0.0f, 0.0f);
-	vector(&up, 0.0f, 0.0f, 0.0f);
+	point(&from, 0.0f, 1.5f, -0.5f);
+	point(&to, 0.0f, 1.0f, 0.0f);
+	vector(&up, 0.0f, 1.0f, 0.0f);
 	camera->transform = view_transformation(&from, &to, &up);
 
 	render(img, camera, &world);
