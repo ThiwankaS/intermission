@@ -68,7 +68,7 @@ t_tuple	*color_at(t_world *world, t_ray *r)
 	return (colour);
 }
 
-t_mat	*view_transformation(t_tuple *from, t_tuple *to, t_tuple *up)
+void view_transformation(t_mat *transform, t_tuple *from, t_tuple *to, t_tuple *up)
 {
 	t_tuple sub;
 	t_tuple forward;
@@ -76,7 +76,6 @@ t_mat	*view_transformation(t_tuple *from, t_tuple *to, t_tuple *up)
 	t_tuple true_up;
 	t_mat orientation;
 	t_mat translate;
-	t_mat *result;
 
 	tuple_subtract(&sub, to, from);
 	normalize(&forward, &sub);
@@ -94,11 +93,7 @@ t_mat	*view_transformation(t_tuple *from, t_tuple *to, t_tuple *up)
 	orientation.m[2][2] = -forward.t[2];
 	orientation.m[3][3] = 1;
 	translation(&translate, -from->t[0], -from->t[1], -from->t[2]);
-	result = ft_calloc(1, sizeof(t_mat));
-	if (!result)
-		return (NULL);
-	matrix_multiply(result, &orientation, &translate);
-	return (result);
+	matrix_multiply(transform, &orientation, &translate);
 }
 
 t_camera *camera_init(int hsize, int vsize, float fov)
@@ -113,7 +108,7 @@ t_camera *camera_init(int hsize, int vsize, float fov)
 	camera->hsize = hsize;
 	camera->vsize = vsize;
 	camera->fov = fov;
-	camera->transform = NULL;
+	identity(&camera->transform);
 	half_view = tan(fov/2);
 	aspect = hsize /(float) vsize;
 	if(aspect >= 1)
@@ -149,7 +144,7 @@ t_ray *ray_for_pixel(t_camera *camera, int px, int py)
 	yoffset = (py + 0.5) * camera->pixel_size;
 	world_x = camera->half_width - xoffset;
 	world_y = camera->half_height - yoffset;
-	matrix_inverse(&inverse, camera->transform);
+	matrix_inverse(&inverse, &camera->transform);
 	point(&p, world_x, world_y, -1);
 	point(&abs_p, 0.0f, 0.0f, 0.0f);
 	matrix_multiply_by_tuple(&pixel, &inverse, &p);
