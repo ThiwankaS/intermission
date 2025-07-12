@@ -6,12 +6,16 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 02:26:59 by tsomacha          #+#    #+#             */
-/*   Updated: 2025/07/10 02:50:42 by tsomacha         ###   ########.fr       */
+/*   Updated: 2025/07/11 06:17:41 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../include/miniRt.h"
 
+/**
+ * Calculates the position along a ray at distance `t` from the origin.
+ * Stores the resulting point in `pp`.
+ */
 void	position(t_tuple *pp, t_ray *r, float t)
 {
 	t_tuple	temp;
@@ -20,7 +24,8 @@ void	position(t_tuple *pp, t_ray *r, float t)
 	tuple_add(pp, &r->origin, &temp);
 }
 
-t_intersect	*intersection(double t, t_object *object)
+
+t_intersect	*add_node(t_object *object, float t)
 {
 	t_intersect	*i;
 
@@ -29,10 +34,11 @@ t_intersect	*intersection(double t, t_object *object)
 		return (NULL);
 	i->value = t;
 	i->object = object;
+	i->next = NULL;
 	return (i);
 }
 
-t_intersect	*cal_intersects(t_object *object, t_ray *rp, t_intersect out[2])
+t_intersect	*cal_intersects(t_object *object, t_ray *rp, t_intersect *xs)
 {
 	t_tuple	abs;
 	t_tuple	sphere_to_ray;
@@ -50,60 +56,54 @@ t_intersect	*cal_intersects(t_object *object, t_ray *rp, t_intersect out[2])
 	if (discriminent < 0)
 		return (NULL);
 	values[3] = sqrt(discriminent);
-	out[0].value = (-values[1] - values[3]) / (2 * values[0]);
-	out[0].object = object;
-	out[1].value = (-values[1] + values[3]) / (2 * values[0]);
-	out[1].object = object;
-	return (out);
+	xs = intersections(xs, object, (-values[1] - values[3]) / (2 * values[0]));
+	xs = intersections(xs, object, (-values[1] + values[3]) / (2 * values[0]));
+	return (xs);
 }
 
-t_intersections	*intersections(t_intersections *xs, t_intersect *intersect)
-{
-	t_intersections	*current;
-	t_intersections	*previous;
-	t_intersections	*new;
 
-	if (!xs)
-	{
-		xs = ft_calloc(1, sizeof(t_intersections));
-		if (!xs)
-			return (NULL);
-		xs->intersect = intersect;
-		xs->next = NULL;
-		xs->count = 1;
-		return (xs);
-	}
+t_intersect	*intersections(t_intersect *xs, t_object *s, float value)
+{
+	t_intersect	*current;
+	t_intersect	*previous;
+	t_intersect	*new;
+
 	current = xs;
+	previous = NULL;
 	while (current)
 	{
 		previous = current;
 		current = current->next;
 	}
-	new = ft_calloc(1, sizeof(t_intersections));
+	new = add_node(s, value);
 	if (!new)
-		return (xs);
-	new->intersect = intersect;
-	new->next = NULL;
+		return (NULL);
+	if (!xs && !previous)
+	{
+		new->count = 1;
+		return (new);
+	}
 	previous->next = new;
 	xs->count++;
 	return (xs);
 }
 
-t_intersect	*hit(t_intersections *xs)
+
+t_intersect	*hit(t_intersect *xs)
 {
-	t_intersect		*i;
-	t_intersections	*current;
-	t_intersections	*previous;
+	t_intersect	*i;
+	t_intersect	*current;
+	t_intersect	*previous;
 
 	current = xs;
 	i = NULL;
 	while (current)
 	{
 		previous = current;
-		if (previous->intersect->value > 0.0)
+		if (previous->value > 0.0)
 		{
-			if (!i || previous->intersect->value < i->value)
-				i = previous->intersect;
+			if (!i || previous->value < i->value)
+				i = previous;
 		}
 		current = current->next;
 	}
