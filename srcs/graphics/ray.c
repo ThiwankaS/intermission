@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 02:26:59 by tsomacha          #+#    #+#             */
-/*   Updated: 2025/07/11 06:17:41 by tsomacha         ###   ########.fr       */
+/*   Updated: 2025/07/22 21:24:47 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,94 +18,145 @@
  */
 void	position(t_tuple *pp, t_ray *r, float t)
 {
-	t_tuple	temp;
-
-	tuple_multiply_scalor(&temp, &r->direction, t);
-	tuple_add(pp, &r->origin, &temp);
+	pp->t[0] = r->origin.t[0] + r->direction.t[0] * t;
+	pp->t[1] = r->origin.t[1] + r->direction.t[1] * t;
+	pp->t[2] = r->origin.t[2] + r->direction.t[2] * t;
+	pp->t[3] = r->origin.t[3] + r->direction.t[3] * t;
 }
 
-
-t_intersect	*add_node(t_object *object, float t)
+void find_hit_sphere(t_object *object, t_ray *r, t_hit *h)
 {
-	t_intersect	*i;
+	float	v[14];
 
-	i = ft_calloc(1, sizeof(t_intersect));
-	if (!i)
-		return (NULL);
-	i->value = t;
-	i->object = object;
-	i->next = NULL;
-	return (i);
-}
+	// ray origin
+	v[0] = r->origin.t[0];
+	v[1] = r->origin.t[1];
+	v[2] = r->origin.t[2];
 
-t_intersect	*cal_intersects(t_object *object, t_ray *rp, t_intersect *xs)
-{
-	t_tuple	abs;
-	t_tuple	sphere_to_ray;
-	t_ray	r;
-	float	values[4];
-	float	discriminent;
+	// ray direction
+	v[3] = r->direction.t[0];
+	v[4] = r->direction.t[1];
+	v[5] = r->direction.t[2];
 
-	point(&abs, 0, 0, 0);
-	transform(&r, rp, &object->invs);
-	tuple_subtract(&sphere_to_ray, &r.origin, &abs);
-	values[0] = dot(&r.direction, &r.direction);
-	values[1] = 2 * dot(&r.direction, &sphere_to_ray);
-	values[2] = dot(&sphere_to_ray, &sphere_to_ray) - 1;
-	discriminent = (values[1] * values[1]) - (4 * values[0] * values[2]);
-	if (discriminent < 0)
-		return (NULL);
-	values[3] = sqrt(discriminent);
-	xs = intersections(xs, object, (-values[1] - values[3]) / (2 * values[0]));
-	xs = intersections(xs, object, (-values[1] + values[3]) / (2 * values[0]));
-	return (xs);
-}
+	// subtract sphere center from ray origin
+	v[6] = v[0] - object->x;  // dx = origin.x - center.x
+	v[7] = v[1] - object->y;  // dy = origin.y - center.y
+	v[8] = v[2] - object->z;  // dz = origin.z - center.z
 
+	// quadratic coefficients (a, b, c)
+	v[9]  = v[3]*v[3] + v[4]*v[4] + v[5]*v[5];  // a = dot(direction, direction)
+	v[10] = 2.0f * (v[3]*v[6] + v[4]*v[7] + v[5]*v[8]);  // b = 2 * dot(direction, sphere_to_ray)
+	v[11] = v[6]*v[6] + v[7]*v[7] + v[8]*v[8] - (object->radius * object->radius);  // c = |sphere_to_ray|^2 - r^2
 
-t_intersect	*intersections(t_intersect *xs, t_object *s, float value)
-{
-	t_intersect	*current;
-	t_intersect	*previous;
-	t_intersect	*new;
-
-	current = xs;
-	previous = NULL;
-	while (current)
+	// discriminant
+	v[12] = v[10]*v[10] - 4.0f * v[9] * v[11];
+	if (v[12] >= 0.0f)
 	{
-		previous = current;
-		current = current->next;
-	}
-	new = add_node(s, value);
-	if (!new)
-		return (NULL);
-	if (!xs && !previous)
-	{
-		new->count = 1;
-		return (new);
-	}
-	previous->next = new;
-	xs->count++;
-	return (xs);
-}
+		v[13] = sqrtf(v[12]);
+		float inv_2a = 0.5f / v[9];
+		float t1 = (-v[10] - v[13]) * inv_2a;
+		float t2 = (-v[10] + v[13]) * inv_2a;
 
-
-t_intersect	*hit(t_intersect *xs)
-{
-	t_intersect	*i;
-	t_intersect	*current;
-	t_intersect	*previous;
-
-	current = xs;
-	i = NULL;
-	while (current)
-	{
-		previous = current;
-		if (previous->value > 0.0)
+		if (t1 > 0.0f && t1 < h->t)
 		{
-			if (!i || previous->value < i->value)
-				i = previous;
+			h->t = t1;
+			h->object = object;
+			h->hit = true;
 		}
-		current = current->next;
+		if (t2 > 0.0f && t2 < h->t)
+		{
+			h->t = t2;
+			h->object = object;
+			h->hit = true;
+		}
 	}
-	return (i);
 }
+
+
+void find_hit_plane(t_object *object, t_ray *r, t_hit *h)
+{
+	float	dy;
+	float	t;
+
+	dy = r->direction.t[1];
+	if (fabsf(dy) >= 1e-6f)
+	{
+		t = -r->origin.t[1] / dy;
+		if (t > 0.0f && t < h->t)
+		{
+			h->t = t;
+			h->object = object;
+			h->hit = true;
+		}
+	}
+}
+
+void find_hit_cylinder(t_object *object, t_ray *r, t_hit *h)
+{
+	const float min_y = -1.0f;
+	const float max_y =  1.0f;
+
+	float ox = r->origin.t[0];
+	float oz = r->origin.t[2];
+	float dx = r->direction.t[0];
+	float dz = r->direction.t[2];
+
+	float a = dx*dx + dz*dz;
+
+	if (fabsf(a) >= 1e-6f)
+	{
+		float b = 2.0f * (ox*dx + oz*dz);
+		float c = ox*ox + oz*oz - 1.0f;
+		float discriminant = b*b - 4.0f*a*c;
+
+		if (discriminant >= 0.0f)
+		{
+			float sqrt_d = sqrtf(discriminant);
+			float inv2a = 0.5f / a;
+
+			float t1 = (-b - sqrt_d) * inv2a;
+			float t2 = (-b + sqrt_d) * inv2a;
+
+			float y1 = r->origin.t[1] + t1 * r->direction.t[1];
+			float y2 = r->origin.t[1] + t2 * r->direction.t[1];
+
+			if (t1 > 0.0f && t1 < h->t && y1 >= min_y && y1 <= max_y)
+			{
+				h->t = t1;
+				h->object = object;
+				h->hit = true;
+			}
+			if (t2 > 0.0f && t2 < h->t && y2 >= min_y && y2 <= max_y)
+			{
+				h->t = t2;
+				h->object = object;
+				h->hit = true;
+			}
+		}
+	}
+}
+
+t_hit find_hit(t_world *world, t_ray *ray)
+{
+	t_hit		closest;
+	t_object	*object;
+	t_ray		local_ray;
+
+	closest.t = INFINITY;
+	closest.hit = false;
+	closest.object = NULL;
+	object = world->components;
+	while (object)
+	{
+		transform(&local_ray, ray, &object->invs);
+		if (object->type == SPHERE)
+			find_hit_sphere(object, &local_ray, &closest);
+		// else if (object->type == PLANE)
+		// 	find_hit_plane(object, &local_ray, &closest);
+		// else if (object->type == CYLINDER)
+		// 	find_hit_cylinder(object, &local_ray, &closest);
+		object = object->next;
+	}
+	return closest;
+}
+

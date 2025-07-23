@@ -1,82 +1,145 @@
-# include "include/miniRt.h"
-
-typedef struct s_projectile
-{
-	t_tuple point;
-	t_tuple velocity;
-} t_projectile;
-
-typedef struct s_environment
-{
-	t_tuple gravity;
-	t_tuple wind;
-} t_environment;
-
-t_projectile *tick(t_environment *e, t_projectile *p);
-
-// WIDTH and HEIGHT
+#include "include/miniRt.h"
 #define WIDTH 1600
 #define HEIGHT 1200
 
-int main(void)
+int	main(void)
 {
-	uint32_t color = 0xFF0000FF;
-
-	// Create window and image
-	mlx_t *mlx = mlx_init(WIDTH, HEIGHT, "My Window", true);
+	mlx_t *mlx = mlx_init(WIDTH, HEIGHT, "MiniRT Corner Room", true);
 	if (!mlx)
-		return 1;
-
+		return (1);
 	mlx_image_t *img = mlx_new_image(mlx, WIDTH, HEIGHT);
-	if (!img)
-		return 1;
+	if (!img || mlx_image_to_window(mlx, img, 0, 0) < 0)
+		return (1);
 
-	// SHOW THE IMAGE FIRST!
-	if (mlx_image_to_window(mlx, img, 0, 0) < 0)
-		return 1;
+	t_world world;
+	t_material m_wall, m_sphere1, m_sphere2, m_cylinder;
+	t_object floor, left_wall, back_wall, sphere1, sphere2, cylinder;
+	t_mat scale, trans, rot, tmp;
 
-	// Setup tuples
-	t_tuple p, velocity, gravity, wind, norm_velocity, scaled_velocity;
+	// Common wall material
+	color(&m_wall.color, 0.8f, 0.8f, 1.0f);
+	m_wall.ambient = 0.2f; m_wall.diffuse = 0.8f;
+	m_wall.specular = 0.0f; m_wall.shininess = 10;
 
-	point(&p, 50.0, 50.0, 0.0); // start 1 unit up so it's visible
-	vector(&velocity, 1.0, 1.8, 0.0);
-	normalize(&norm_velocity, &velocity);
-	tuple_multiply_scalor(&scaled_velocity, &norm_velocity, 15.0); // reasonable speed
+	// Sphere 1 material
+	color(&m_sphere1.color, 1.0f, 0.3f, 0.3f);
+	m_sphere1.ambient = 0.1f; m_sphere1.diffuse = 0.7f;
+	m_sphere1.specular = 0.3f; m_sphere1.shininess = 100;
 
-	vector(&gravity, 0.0, -0.1, 0.0);
-	vector(&wind, -0.01, 0.0, 0.0);
+	// Sphere 2 material
+	color(&m_sphere2.color, 0.3f, 1.0f, 0.6f);
+	m_sphere2.ambient = 0.1f; m_sphere2.diffuse = 0.7f;
+	m_sphere2.specular = 0.1f; m_sphere2.shininess = 100;
 
-	t_projectile proj = {p, scaled_velocity};
-	t_environment env = {gravity, wind};
+	// Cylinder material
+	color(&m_cylinder.color, 1.0f, 1.0f, 0.4f);
+	m_cylinder.ambient = 0.1f; m_cylinder.diffuse = 0.7f;
+	m_cylinder.specular = 0.3f; m_cylinder.shininess = 100;
 
-	// Draw the motion
-	while (proj.point.t[1] > 0 && proj.point.t[0] >= 0 && proj.point.t[0] < WIDTH && proj.point.t[1] < HEIGHT)
-	{
-		int x = (int)proj.point.t[0];
-		int y = HEIGHT - (int)proj.point.t[1]; // Flip Y axis
+	// Floor (XZ plane at Y = 0)
+	floor.type = PLANE;
+	floor.material = &m_wall;
+	identity(&floor.transform);
+	matrix_inverse(&floor.invs, &floor.transform);
+	matrix_transpose(&floor.invs_trans, &floor.invs);
 
-		if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT)
-			mlx_put_pixel(img, x, y, color);
+	// Back Wall (XY plane at Z = 3, facing -Z)
+	translation(&trans, 0, 0, 3);
+	rotate_x(&rot, M_PI_2);
+	matrix_multiply(&tmp, &trans, &rot);
+	back_wall.type = PLANE;
+	back_wall.material = &m_wall;
+	set_transform(&back_wall.transform, &tmp);
+	matrix_inverse(&back_wall.invs, &back_wall.transform);
+	matrix_transpose(&back_wall.invs_trans, &back_wall.invs);
 
-		t_projectile *next = tick(&env, &proj);
-		proj = *next;
-		free(next);
-	}
+	// Left Wall (YZ plane at X = -3, facing +X)
+	translation(&trans, -3, 0, 0);
+	rotate_z(&rot, -M_PI_2);
+	matrix_multiply(&tmp, &trans, &rot);
+	left_wall.type = PLANE;
+	left_wall.material = &m_wall;
+	set_transform(&left_wall.transform, &tmp);
+	matrix_inverse(&left_wall.invs, &left_wall.transform);
+	matrix_transpose(&left_wall.invs_trans, &left_wall.invs);
 
-	// Keep window open
+	// Sphere 1
+	scaling(&scale, 0.5f, 0.5f, 0.5f);
+	translation(&trans, -1.0f, 0.5f, 1.5f);
+	matrix_multiply(&tmp, &trans, &scale);
+	sphere1.type = SPHERE;
+	sphere1.material = &m_sphere1;
+	set_transform(&sphere1.transform, &tmp);
+	matrix_inverse(&sphere1.invs, &sphere1.transform);
+	matrix_transpose(&sphere1.invs_trans, &sphere1.invs);
+
+	// Sphere 2
+	scaling(&scale, 0.4f, 0.4f, 0.4f);
+	translation(&trans, 1.0f, 0.4f, 2.5f);
+	matrix_multiply(&tmp, &trans, &scale);
+	sphere2.type = SPHERE;
+	sphere2.material = &m_sphere2;
+	set_transform(&sphere2.transform, &tmp);
+	matrix_inverse(&sphere2.invs, &sphere2.transform);
+	matrix_transpose(&sphere2.invs_trans, &sphere2.invs);
+
+	// Cylinder
+	scaling(&scale, 0.3f, 1.0f, 0.3f);
+	translation(&trans, 0.0f, 1.0f, 2.0f);
+	matrix_multiply(&tmp, &trans, &scale);
+	cylinder.type = CYLINDER;
+	cylinder.material = &m_cylinder;
+	set_transform(&cylinder.transform, &tmp);
+	matrix_inverse(&cylinder.invs, &cylinder.transform);
+	matrix_transpose(&cylinder.invs_trans, &cylinder.invs);
+
+	// Chain objects: floor -> back_wall -> left_wall -> sphere1 -> sphere2 -> cylinder
+	floor.next = &back_wall;
+	back_wall.next = &left_wall;
+	left_wall.next = NULL;
+	sphere1.next = &sphere2;
+	sphere2.next = &cylinder;
+	cylinder.next = NULL;
+	world.components = &sphere1;
+
+	// Light
+	point(&world.light.position, -10.0f, 10.0f, -10.0f);
+	color(&world.light.color, 1.0f, 1.0f, 1.0f);
+
+	// Camera (top corner, looking into room)
+	t_camera camera = camera_init(WIDTH, HEIGHT, M_PI / 3);
+	t_tuple from, to, up;
+	point(&from, 3.0f, 3.0f, -3.0f);   // Camera position
+	point(&to, 0.0f, 1.0f, 2.0f);     // Look-at point
+	vector(&up, 0.0f, 1.0f, 0.0f);
+	view_transformation(&camera, &from, &to, &up);
+
+	// Render
+	static t_state state;
+	state.mlx = mlx;
+	state.img = img;
+	state.camera = &camera;
+	state.world = &world;
+	state.tiles_x = (WIDTH + TILE_SIZE - 1) / TILE_SIZE;
+	state.tiles_y = (HEIGHT + TILE_SIZE - 1) / TILE_SIZE;
+	state.current_tile = 0;
+	state.done = false;
+
+	static t_mouse_state mouse_state;
+	mouse_state.mlx = mlx,
+	mouse_state.camera = &camera,
+	mouse_state.world = &world;
+	mouse_state.render_state = &state;
+	mouse_state.is_dragging = false;
+	mouse_state.last_x = 0;
+	mouse_state.last_y = 0;
+	mouse_state.selected_object = NULL;
+
+	// Hook rendering into MLX loop
+	mlx_mouse_hook(mlx, mouse_handler, &mouse_state);
+	mlx_key_hook(mlx, key_handler, &mouse_state);
+	mlx_loop_hook(mlx, render, &state);
 	mlx_loop(mlx);
 	mlx_terminate(mlx);
-	return 0;
-}
-
-t_projectile *tick(t_environment *e, t_projectile *p)
-{
-	t_projectile *pro = malloc(sizeof(t_projectile));
-	t_tuple temp;
-
-	tuple_add(&pro->point, &p->point, &p->velocity);
-	tuple_add(&temp, &e->gravity, &e->wind);
-	tuple_add(&pro->velocity, &p->velocity, &temp);
-
-	return pro;
+	return (0);
 }
