@@ -56,57 +56,6 @@ void	default_state(t_state *state)
 	state->selected_object = NULL;
 }
 
-void	print_object(t_object *s)
-{
-	if (!s)
-		return ;
-	printf("id : %d\n", s->id);
-	printf("type : %d\n", s->type);
-	printf("s.ambient : %.3f\n", *s->ambient);
-	printf("s.diffuse : %.3f\n", *s->diffuse);
-	printf("s.specular : %.3f\n", s->specular);
-	printf("s.shininess : %.3f\n", s->shininess);
-	printf("s.x : %.3f\n", s->x);
-	printf("s.y : %.3f\n", s->y);
-	printf("s.z : %.3f\n", s->z);
-	printf("s.radius : %.3f\n", s->radius);
-	printf("s.color :\n");
-	tuple_print(&s->color);
-	printf("s.transform :\n");
-	matrix_print(&s->transform);
-}
-
-void	print_things(t_state *state)
-{
-	t_object	*s;
-
-	printf("state.world.ambient : %.3f\n", state->world.ambient);
-	printf("state.world.colour :\n");
-	tuple_print(&state->world.colour);
-	printf("state.world.diffuse : %.3f\n", state->world.diffuse);
-	printf("state.world.light.color :\n");
-	tuple_print(&state->world.light.color);
-	printf("state.world.light.position :\n");
-	tuple_print(&state->world.light.position);
-	printf("state.camera.hsize : %d\n", state->camera.hsize);
-	printf("state.camera.vsize : %d\n", state->camera.vsize);
-	printf("state.camera.half_height : %.3f\n", state->camera.half_height);
-	printf("state.camera.half_width : %.3f\n", state->camera.half_width);
-	printf("state.camera.pixel_size : %.3f\n", state->camera.pixel_size);
-	printf("state.camera.fov : %.3f\n", state->camera.fov);
-	printf("state.camera.transform :\n");
-	matrix_print(&state->camera.transform);
-	printf("state.camera.invs :\n");
-	matrix_print(&state->camera.invs);
-	printf("object list :\n");
-	s = state->world.components;
-	while (s)
-	{
-		print_object(s);
-		s = s->next;
-	}
-}
-
 int	main(int argc, char *argv[])
 {
 	t_state	*state;
