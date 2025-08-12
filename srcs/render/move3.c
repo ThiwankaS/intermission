@@ -19,7 +19,7 @@ int	resize_cylinder(mlx_key_data_t key, t_object *obj)
 	if (key.key == MLX_KEY_UP)
 		obj->radius += 0.1f;
 	else if (key.key == MLX_KEY_DOWN)
-		obj->radius = fmaxf(0.5f, obj->radius - 0.1f);
+		obj->radius = fmaxf(1.0f, obj->radius - 0.1f);
 	else if (key.key == MLX_KEY_RIGHT)
 		obj->height += 0.1f;
 	else if (key.key == MLX_KEY_LEFT)
