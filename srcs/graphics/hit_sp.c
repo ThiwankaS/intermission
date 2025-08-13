@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 22:35:53 by tsomacha          #+#    #+#             */
-/*   Updated: 2025/08/02 14:48:32 by tsomacha         ###   ########.fr       */
+/*   Updated: 2025/08/12 20:20:01 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	set_closet_hit_sp(t_object *object, t_hit *h, float *v)
 	float	t2;
 	float	min_t;
 
-	inv_2a = 0.5f / v[9];
+	inv_2a = 1.0f / (2.0f * v[9]);
 	t1 = (-v[10] - v[13]) * inv_2a;
 	t2 = (-v[10] + v[13]) * inv_2a;
 	min_t = INFINITY;

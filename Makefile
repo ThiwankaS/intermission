@@ -1,4 +1,4 @@
-PROG = miniRt
+NAME = miniRt
 
 # === LIBRARIES ===
 MLX42_DIR = MLX42
@@ -65,9 +65,9 @@ SRCS = \
 OBJS = $(SRCS:.c=.o)
 
 # === TARGETS ===
-all: $(LIBFT_A) $(MLX42_LIB) $(PROG)
+all: $(LIBFT_A) $(MLX42_LIB) $(NAME)
 
-$(PROG): $(OBJS)
+$(NAME): $(OBJS)
 	$(CMD) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(LIBFT_A) :
@@ -93,7 +93,7 @@ clean:
 	@rm -rf $(MLX42_DIR)/build
 
 fclean: clean
-	rm -f $(PROG)
+	rm -f $(NAME)
 	@make -C $(LIBFT_DIR) fclean
 
 re: fclean all
