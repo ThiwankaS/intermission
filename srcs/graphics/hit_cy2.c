@@ -48,9 +48,12 @@ void	hit_cap(t_object *object, t_ray *r, t_hit *h)
 	v[3] = r->origin.t[0];
 	v[4] = r->origin.t[1];
 	v[5] = r->origin.t[2];
-	v[6] = -object->height / 2.0f;
-	v[7] = object->height / 2.0f;
-	v[8] = object->radius * object->radius;
+	v[6] = -1.0f;
+	v[7] = 1.0f;
+	v[8] = 1.0f;
+	// v[6] = -object->height / 2.0f;
+	// v[7] = object->height / 2.0f;
+	// v[8] = object->radius * object->radius;
 	if (fabsf(v[1]) > EPSILON)
 	{
 		v[9] = (v[6] - v[4]) / v[1];

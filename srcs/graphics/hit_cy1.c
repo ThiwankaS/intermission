@@ -36,15 +36,19 @@ void	set_closet_hit_cy(t_object *object, t_hit *h, float *v)
 
 void	cache_values(t_object *object, t_ray *r, float *v)
 {
+	(void) object;
 	v[0] = r->direction.t[0];
 	v[1] = r->direction.t[1];
 	v[2] = r->direction.t[2];
 	v[3] = r->origin.t[0];
 	v[4] = r->origin.t[1];
 	v[5] = r->origin.t[2];
-	v[6] = -object->height / 2.0f;
-	v[7] = object->height / 2.0f;
-	v[8] = object->radius * object->radius;
+	v[6] = -1.0f;
+	v[7] = 1.0f;
+	v[8] = 0.1f;
+	// v[6] = -object->height / 2.0f;
+	// v[7] = object->height / 2.0f;
+	// v[8] = object->radius * object->radius;
 }
 
 void	find_hit_cylinder(t_object *object, t_ray *r, t_hit *h)
