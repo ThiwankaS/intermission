@@ -14,12 +14,15 @@
 
 int	resize_cylinder(mlx_key_data_t key, t_object *obj)
 {
+	float	radius;
+
+	radius = 0.0f;
 	if (!obj)
 		return (FAILURE);
 	if (key.key == MLX_KEY_UP)
-		obj->radius += 0.1f;
+		radius += 0.1f;
 	else if (key.key == MLX_KEY_DOWN)
-		obj->radius = fmaxf(1.0f, obj->radius - 0.1f);
+		radius = fmaxf(1.0f, obj->radius - 0.1f);
 	else if (key.key == MLX_KEY_RIGHT)
 		obj->height += 0.1f;
 	else if (key.key == MLX_KEY_LEFT)
@@ -27,7 +30,7 @@ int	resize_cylinder(mlx_key_data_t key, t_object *obj)
 	else
 		return (FAILURE);
 	printf("height : %.5f | radius : %.5f \n", obj->height, obj->radius);
-	creating_cylinder_object(obj);
+	creating_cylinder_object(obj, radius);
 	return (SUCCESS);
 }
 
@@ -50,7 +53,7 @@ int	move_cylinder(mlx_key_data_t key, t_object *obj)
 		obj->z -= step;
 	else
 		return (FAILURE);
-	creating_cylinder_object(obj);
+	creating_cylinder_object(obj, obj->radius);
 	return (SUCCESS);
 }
 
@@ -76,7 +79,7 @@ int	rotate_cylinder(mlx_key_data_t key, t_object *obj)
 		return (FAILURE);
 	obj->norm_v = matrix_multiply_by_tuple(&rotate, &obj->norm_v);
 	obj->norm_v = normalize(&obj->norm_v);
-	creating_cylinder_object(obj);
+	creating_cylinder_object(obj, obj->radius);
 	return (SUCCESS);
 }
 

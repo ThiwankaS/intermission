@@ -87,7 +87,7 @@ void	set_sphere_values(t_state *state, t_object *s, float *v)
 	s->specular = 0.9f;
 	s->shininess = 200.0f;
 	s->next = NULL;
-	creating_sphere_object(s);
+	creating_sphere_object(s, v[3]);
 	add_object(state, &s);
 	state->world.obj_count++;
 }

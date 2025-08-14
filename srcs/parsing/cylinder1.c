@@ -40,7 +40,7 @@ t_mat	set_rotate_matrix(t_object *s, t_tuple *axis, t_tuple *v0)
 	return (rotate);
 }
 
-void	creating_cylinder_object(t_object *s)
+void	creating_cylinder_object(t_object *s, float radius)
 {
 	t_tuple	v0;
 	t_tuple	axis;
@@ -50,7 +50,7 @@ void	creating_cylinder_object(t_object *s)
 
 	vector(&v0, 0, 1, 0);
 	axis = cross(&v0, &s->norm_v);
-	scale = scaling(s->radius, s->height / 2.0f, s->radius);
+	scale = scaling(radius, s->height / 2.0f, radius);
 	traslate = translation(s->x, s->y, s->z);
 	rotate = set_rotate_matrix(s, &axis, &v0);
 	scale = matrix_multiply(&rotate, &scale);
@@ -70,7 +70,6 @@ void	set_cylinder_values(t_state *state, t_object *s, float *v)
 	s->z = v[2];
 	vector(&s->norm_v, v[3], v[4], v[5]);
 	s->norm_v = normalize(&s->norm_v);
-	s->radius = v[6];
 	s->height = v[7];
 	color(&s->color, v[8] / 255.0f, v[9] / 255.0f, v[10] / 255.0f);
 	s->ambient = &state->world.ambient;
@@ -106,7 +105,7 @@ int	set_cylinder(char *line, t_state *state, int *index)
 		return (free_split(items), 1);
 	s = init_object();
 	set_cylinder_values(state, s, v);
-	creating_cylinder_object(s);
+	creating_cylinder_object(s, v[9]);
 	free_split(items);
 	return (0);
 }

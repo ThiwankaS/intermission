@@ -22,10 +22,10 @@ int	resize_sphere(mlx_key_data_t key, t_object *obj)
 	if (key.key == MLX_KEY_UP)
 		obj->radius = obj->radius + step;
 	else if (key.key == MLX_KEY_DOWN)
-		obj->radius = fmaxf(1.0f, obj->radius - step);
+		obj->radius = fmaxf(0.5f, obj->radius - step);
 	else
 		return (FAILURE);
-	creating_sphere_object(obj);
+	creating_sphere_object(obj, obj->radius);
 	return (SUCCESS);
 }
 
@@ -48,6 +48,6 @@ int	move_sphere(mlx_key_data_t key, t_object *obj)
 		obj->z -= step;
 	else
 		return (FAILURE);
-	creating_sphere_object(obj);
+	creating_sphere_object(obj, obj->radius);
 	return (SUCCESS);
 }

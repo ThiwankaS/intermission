@@ -12,12 +12,12 @@
 
 #include "../../include/miniRt.h"
 
-void	creating_sphere_object(t_object *s)
+void	creating_sphere_object(t_object *s, float radius)
 {
 	t_mat	m1;
 	t_mat	m2;
 
-	m1 = scaling(s->radius, s->radius, s->radius);
+	m1 = scaling(radius, radius, radius);
 	m2 = translation(s->x, s->y, s->z);
 	s->transform = matrix_multiply(&m2, &m1);
 	matrix_inverse(&s->invs, &s->transform);

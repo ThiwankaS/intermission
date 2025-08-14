@@ -29,6 +29,10 @@ t_hit	find_hit(t_world *world, t_ray *ray)
 	t_hit		closest;
 	t_object	*object;
 	t_ray		local_ray;
+	t_hit		local_hit;
+	t_tuple		dir;
+	float		dir_len;
+	float		world_t;
 
 	closest.t = INFINITY;
 	closest.hit = false;
@@ -36,6 +40,17 @@ t_hit	find_hit(t_world *world, t_ray *ray)
 	object = world->components;
 	while (object)
 	{
+		local_ray.origin = matrix_multiply_by_tuple(&object->invs, &ray->origin);
+		dir = matrix_multiply_by_tuple(&object->invs, &ray->direction);
+		dir_len = tuple_magnitute(&dir);
+		if (dir_len != 0.0f)
+			local_ray.direction = tuple_divide_scalar(&dir, dir_len);
+		else
+			local_ray.direction = dir;
+		local_ray.direction.t[3] = 0.0f;
+		local_hit.t = INFINITY;
+		local_hit.hit = false;
+		local_hit.object = object;
 		local_ray = transform(ray, &object->invs);
 		if (object->type == SPHERE)
 			find_hit_sphere(object, &local_ray, &closest);
@@ -43,6 +58,23 @@ t_hit	find_hit(t_world *world, t_ray *ray)
 			find_hit_plane(object, &local_ray, &closest);
 		else if (object->type == CYLINDER)
 			find_hit_cylinder(object, &local_ray, &closest);
+		if(local_hit.hit)
+		{
+			world_t = local_hit.t * dir_len;
+			if (world_t < closest.t)
+			{
+				closest.t = world_t;
+				closest.hit = true;
+				closest.object = object;
+			}
+		}
+		// local_ray = transform(ray, &object->invs);
+		// if (object->type == SPHERE)
+		// 	find_hit_sphere(object, &local_ray, &closest);
+		// else if (object->type == PLANE)
+		// 	find_hit_plane(object, &local_ray, &closest);
+		// else if (object->type == CYLINDER)
+		// 	find_hit_cylinder(object, &local_ray, &closest);
 		object = object->next;
 	}
 	return (closest);

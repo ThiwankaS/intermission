@@ -19,8 +19,11 @@ t_tuple	normal_at_cylinder(t_object *s, t_tuple *obj_p)
 	float	max;
 	t_tuple	obj_normal;
 
-	min = -s->height / 2.0f;
-	max = s->height / 2.0f;
+	// min = -s->height / 2.0f;
+	// max = s->height / 2.0f;
+	(void) s;
+	min = -1.0f;
+	max = 1.0f;
 	dist = obj_p->t[0] * obj_p->t[0] + obj_p->t[2] * obj_p->t[2];
 	if (dist < 1.0f && obj_p->t[1] >= max - EPSILON)
 		vector(&obj_normal, 0.0f, 1.0f, 0.0f);
