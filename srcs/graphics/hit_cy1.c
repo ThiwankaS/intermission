@@ -45,10 +45,7 @@ void	cache_values(t_object *object, t_ray *r, float *v)
 	v[5] = r->origin.t[2];
 	v[6] = -1.0f;
 	v[7] = 1.0f;
-	v[8] = 0.1f;
-	// v[6] = -object->height / 2.0f;
-	// v[7] = object->height / 2.0f;
-	// v[8] = object->radius * object->radius;
+	v[8] = 1.0f;
 }
 
 void	find_hit_cylinder(t_object *object, t_ray *r, t_hit *h)

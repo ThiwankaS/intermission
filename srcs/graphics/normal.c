@@ -19,8 +19,6 @@ t_tuple	normal_at_cylinder(t_object *s, t_tuple *obj_p)
 	float	max;
 	t_tuple	obj_normal;
 
-	// min = -s->height / 2.0f;
-	// max = s->height / 2.0f;
 	(void) s;
 	min = -1.0f;
 	max = 1.0f;
