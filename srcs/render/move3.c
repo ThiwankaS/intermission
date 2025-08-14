@@ -14,23 +14,23 @@
 
 int	resize_cylinder(mlx_key_data_t key, t_object *obj)
 {
-	float	radius;
+	float	step;
 
-	radius = 0.0f;
+	step = 0.1f;
 	if (!obj)
 		return (FAILURE);
 	if (key.key == MLX_KEY_UP)
-		radius += 0.1f;
+		obj->radius += step;
 	else if (key.key == MLX_KEY_DOWN)
-		radius = fmaxf(1.0f, obj->radius - 0.1f);
+		obj->radius = fmaxf(0.5f, obj->radius - step);
 	else if (key.key == MLX_KEY_RIGHT)
-		obj->height += 0.1f;
+		obj->height += step;
 	else if (key.key == MLX_KEY_LEFT)
-		obj->height = fmaxf(0.5f, obj->height - 0.1f);
+		obj->height = fmaxf(0.5f, obj->height - step);
 	else
 		return (FAILURE);
 	printf("height : %.5f | radius : %.5f \n", obj->height, obj->radius);
-	creating_cylinder_object(obj, radius);
+	creating_cylinder_object(obj, obj->radius);
 	return (SUCCESS);
 }
 
