@@ -70,6 +70,7 @@ void	set_cylinder_values(t_state *state, t_object *s, float *v)
 	s->z = v[2];
 	vector(&s->norm_v, v[3], v[4], v[5]);
 	s->norm_v = normalize(&s->norm_v);
+	s->radius = v[6];
 	s->height = v[7];
 	color(&s->color, v[8] / 255.0f, v[9] / 255.0f, v[10] / 255.0f);
 	s->ambient = &state->world.ambient;
@@ -105,7 +106,7 @@ int	set_cylinder(char *line, t_state *state, int *index)
 		return (free_split(items), 1);
 	s = init_object();
 	set_cylinder_values(state, s, v);
-	creating_cylinder_object(s, v[9]);
+	creating_cylinder_object(s, v[6]);
 	free_split(items);
 	return (0);
 }
