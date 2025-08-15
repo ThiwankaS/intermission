@@ -12,6 +12,12 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Computes the surface normal vector for a cylinder at a given point in
+ * object space. Handles top and bottom caps separately and returns the
+ * appropriate normal depending on whether the hit point is on a cap or
+ * the curved side.
+ */
 t_tuple	normal_at_cylinder(t_object *s, t_tuple *obj_p)
 {
 	float	dist;
@@ -32,6 +38,12 @@ t_tuple	normal_at_cylinder(t_object *s, t_tuple *obj_p)
 	return (obj_normal);
 }
 
+/**
+ * Calculates the surface normal of an object at a given point in world space.
+ * Transforms the point into object space, determines the object-space normal
+ * based on the shape type, then transforms it back to world space
+ * and normalizes it.
+ */
 t_tuple	normal_at(t_object *s, t_tuple *world_point)
 {
 	t_tuple	normal;
