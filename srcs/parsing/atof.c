@@ -12,6 +12,11 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Returns true if the character is ASCII whitespace (space or 9–13),
+ * false otherwise.
+ * Used by the float parser to skip leading whitespace safely.
+ */
 bool	ft_isspace(char c)
 {
 	if (c == ' ' || (c >= 9 && c <= 13))
@@ -19,6 +24,11 @@ bool	ft_isspace(char c)
 	return (false);
 }
 
+/**
+ * Parses the integer part of a decimal number from a C string pointer.
+ * Advances the input pointer past consecutive digits
+ * and returns the accumulated value.
+ */
 float	get_interger_part(const char **str)
 {
 	float	result;
@@ -32,6 +42,11 @@ float	get_interger_part(const char **str)
 	return (result);
 }
 
+/**
+ * Parses the fractional part after the decimal point from a C string pointer.
+ * Accumulates digits with decreasing powers of ten,
+ * advancing the pointer as it reads.
+ */
 float	get_fractional_part(const char **str)
 {
 	float	fraction;
@@ -48,6 +63,12 @@ float	get_fractional_part(const char **str)
 	return (fraction);
 }
 
+/**
+ * Converts a decimal string to a float with optional leading whitespace
+ * and sign.
+ * Supports only integral and fractional parts (no exponent);
+ * stops at the first non-digit.
+ */
 float	ft_atof(const char *str)
 {
 	float	result;
