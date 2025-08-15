@@ -12,6 +12,11 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Determines the closest valid intersection point between a ray and a sphere
+ * from the two quadratic roots. Updates the hit record if the intersection
+ * is in front of the ray origin and closer than any previous hit.
+ */
 void	set_closet_hit_sp(t_object *object, t_hit *h, float *v)
 {
 	float	inv_2a;
@@ -35,6 +40,11 @@ void	set_closet_hit_sp(t_object *object, t_hit *h, float *v)
 	}
 }
 
+/**
+ * Calculates ray-sphere intersection for a unit sphere centered at the origin.
+ * Uses the quadratic formula to find potential intersection points and calls
+ * set_closet_hit_sp() if a valid intersection exists.
+ */
 void	find_hit_sphere(t_object *object, t_ray *r, t_hit *h)
 {
 	float	v[14];
