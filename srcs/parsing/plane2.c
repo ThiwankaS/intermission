@@ -12,6 +12,10 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Builds a rotation matrix around an arbitrary unit axis using Rodrigues'
+ * rotation formula for the given angle in radians.
+ */
 t_mat	rotate_axis(t_tuple *axis, float angle)
 {
 	float	c;
@@ -35,6 +39,11 @@ t_mat	rotate_axis(t_tuple *axis, float angle)
 	return (rotate);
 }
 
+/**
+ * Constructs a plane's transform by rotating the default up vector
+ * to the plane's normal and translating to its position.
+ * Also computes inverse and inverse-transpose.
+ */
 void	creating_plane_object(t_object *s)
 {
 	t_tuple	v0;
