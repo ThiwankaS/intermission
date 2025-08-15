@@ -12,6 +12,11 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Parses an RGB color from a comma-separated string,
+ * validates channels in [0,255],
+ * stores the normalized color (0–1) into the world's light color.
+ */
 bool	set_light_color(t_world *world, char *line)
 {
 	char	**values;
@@ -39,6 +44,11 @@ bool	set_light_color(t_world *world, char *line)
 	return (true);
 }
 
+/**
+ * Parses the light's diffuse intensity from a string,
+ * requiring a value in [0,1],
+ * and stores it in the world.
+ */
 bool	set_light_diffuse(t_world *world, char *line)
 {
 	float	v;
@@ -52,6 +62,10 @@ bool	set_light_diffuse(t_world *world, char *line)
 	return (true);
 }
 
+/**
+ * Parses a 3D position from a comma-separated string and assigns it to the
+ * world's light position.
+ */
 bool	set_light_position(t_world *world, char *line)
 {
 	char	**values;
@@ -73,6 +87,11 @@ bool	set_light_position(t_world *world, char *line)
 	return (true);
 }
 
+/**
+ * Reads light position, diffuse intensity, and color from the input line,
+ * validates each, and initializes the world's light once.
+ * Returns nonzero on error.
+ */
 int	set_light(char *line, t_state *state, int *index)
 {
 	char	**items;
