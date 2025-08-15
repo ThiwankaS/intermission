@@ -12,6 +12,10 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Checks if the ray intersection with the bottom cap of the cylinder
+ * lies within the circular boundary. Updates hit data if valid.
+ */
 void	bottom_cap(t_object *object, t_hit *h, float *v)
 {
 	v[10] = v[3] + v[0] * v[9];
@@ -25,6 +29,10 @@ void	bottom_cap(t_object *object, t_hit *h, float *v)
 	}
 }
 
+/**
+ * Checks if the ray intersection with the top cap of the cylinder
+ * lies within the circular boundary. Updates hit data if valid.
+ */
 void	top_cap(t_object *object, t_hit *h, float *v)
 {
 	v[10] = v[3] + v[0] * v[9];
@@ -38,6 +46,11 @@ void	top_cap(t_object *object, t_hit *h, float *v)
 	}
 }
 
+/**
+ * Tests a ray for intersection with the flat caps of a finite cylinder.
+ * Calculates t for the bottom and top planes, then calls cap check functions
+ * if the intersection point is within the circular radius.
+ */
 void	hit_cap(t_object *object, t_ray *r, t_hit *h)
 {
 	float	v[13];
