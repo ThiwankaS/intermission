@@ -24,50 +24,52 @@ void	position(t_tuple *pp, t_ray *r, float t)
 	pp->t[3] = 1.0f;
 }
 
+void	init_hit_object(t_hit *h, t_object *object)
+{
+	h->t = INFINITY;
+	h->hit = false;
+	h->object = object;
+}
+
+void	process_find_hit(t_object *object, t_ray *ray, t_hit *closest)
+{
+	t_ray	local_ray;
+	t_hit	local_hit;
+	float	dir_len;
+	float	world_t;
+
+	local_ray = transform(ray, &object->invs);
+	dir_len = tuple_magnitute(&local_ray.direction);
+	if (dir_len == 0.0f)
+		return ;
+	local_ray.direction = tuple_divide_scalar(&local_ray.direction, dir_len);
+	local_ray.direction.t[3] = 0.0f;
+	init_hit_object(&local_hit, object);
+	if (object->type == SPHERE)
+		find_hit_sphere(object, &local_ray, &local_hit);
+	else if (object->type == PLANE)
+		find_hit_plane(object, &local_ray, &local_hit);
+	else if (object->type == CYLINDER)
+		find_hit_cylinder(object, &local_ray, &local_hit);
+	world_t = local_hit.t / dir_len;
+	if (local_hit.hit && (world_t < closest->t))
+	{
+		closest->t = world_t;
+		closest->hit = true;
+		closest->object = object;
+	}
+}
+
 t_hit	find_hit(t_world *world, t_ray *ray)
 {
 	t_hit		closest;
 	t_object	*object;
-	t_ray		local_ray;
-	t_hit		local_hit;
-	t_tuple		dir;
-	float		dir_len;
-	float		world_t;
 
-	closest.t = INFINITY;
-	closest.hit = false;
-	closest.object = NULL;
+	init_hit_object(&closest, NULL);
 	object = world->components;
 	while (object)
 	{
-		local_ray.origin = matrix_multiply_by_tuple(&object->invs, &ray->origin);
-		dir = matrix_multiply_by_tuple(&object->invs, &ray->direction);
-		dir_len = tuple_magnitute(&dir);
-		if (dir_len != 0.0f)
-			local_ray.direction = tuple_divide_scalar(&dir, dir_len);
-		else
-			local_ray.direction = dir;
-		local_ray.direction.t[3] = 0.0f;
-		local_hit.t = INFINITY;
-		local_hit.hit = false;
-		local_hit.object = object;
-		local_ray = transform(ray, &object->invs);
-		if (object->type == SPHERE)
-			find_hit_sphere(object, &local_ray, &closest);
-		else if (object->type == PLANE)
-			find_hit_plane(object, &local_ray, &closest);
-		else if (object->type == CYLINDER)
-			find_hit_cylinder(object, &local_ray, &closest);
-		if(local_hit.hit)
-		{
-			world_t = local_hit.t * dir_len;
-			if (world_t < closest.t)
-			{
-				closest.t = world_t;
-				closest.hit = true;
-				closest.object = object;
-			}
-		}
+		process_find_hit(object, ray, &closest);
 		object = object->next;
 	}
 	return (closest);
