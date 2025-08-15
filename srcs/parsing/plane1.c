@@ -12,6 +12,10 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Parses plane position (x,y,z) from a comma-separated string into v[0..2].
+ * Validates basic format and frees temporary buffers on failure.
+ */
 bool	get_position_pl(float *v, char *line)
 {
 	char	**values;
@@ -31,6 +35,10 @@ bool	get_position_pl(float *v, char *line)
 	return (true);
 }
 
+/**
+ * Parses plane normal (nx,ny,nz) from a comma-separated string into v[3..5].
+ * Ensures each component is within [-1, 1]; rejects invalid input.
+ */
 bool	get_normal_pl(float *v, char *line)
 {
 	char	**values;
@@ -56,6 +64,10 @@ bool	get_normal_pl(float *v, char *line)
 	return (true);
 }
 
+/**
+ * Parses plane color (r,g,b) from a comma-separated string into v[6..8].
+ * Each channel must be in [0, 255]; rejects invalid input.
+ */
 bool	get_color_pl(float *v, char *line)
 {
 	char	**values;
@@ -81,6 +93,11 @@ bool	get_color_pl(float *v, char *line)
 	return (true);
 }
 
+/**
+ * Initializes a plane object's fields from parsed values,
+ * normalizes its normal,
+ * sets material pointers, builds its transform, and adds it to the world.
+ */
 void	set_plane_values(t_state *state, t_object *s, float *v)
 {
 	if (!state || !s)
@@ -108,6 +125,11 @@ void	set_plane_values(t_state *state, t_object *s, float *v)
 	state->world.obj_count++;
 }
 
+/**
+ * Reads plane parameters (position, normal, color) from the input line,
+ * creates and populates the plane object, and registers it with the world.
+ * Returns nonzero on parsing or allocation error.
+ */
 int	set_plane(char *line, t_state *state, int *index)
 {
 	char		**items;
