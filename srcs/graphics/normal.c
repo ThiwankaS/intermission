@@ -18,14 +18,13 @@
  * appropriate normal depending on whether the hit point is on a cap or
  * the curved side.
  */
-t_tuple	normal_at_cylinder(t_object *s, t_tuple *obj_p)
+t_tuple	normal_at_cylinder(t_tuple *obj_p)
 {
 	float	dist;
 	float	min;
 	float	max;
 	t_tuple	obj_normal;
 
-	(void) s;
 	min = -1.0f;
 	max = 1.0f;
 	dist = obj_p->t[0] * obj_p->t[0] + obj_p->t[2] * obj_p->t[2];
@@ -59,7 +58,7 @@ t_tuple	normal_at(t_object *s, t_tuple *world_point)
 	else if (s->type == SPHERE)
 		obj_normal = tuple_subtract(&obj_point, &absolute_point);
 	else if (s->type == CYLINDER)
-		obj_normal = normal_at_cylinder(s, &obj_point);
+		obj_normal = normal_at_cylinder(&obj_point);
 	else
 		vector(&obj_normal, 0.0f, 0.0f, 0.0f);
 	world_normal = matrix_multiply_by_tuple(&s->invs_trans, &obj_normal);
