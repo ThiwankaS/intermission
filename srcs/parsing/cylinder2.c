@@ -12,6 +12,10 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Parses cylinder position (x,y,z) from a comma-separated string into v[0..2].
+ * Validates basic format and frees temporary allocations on failure.
+ */
 bool	get_position_cy(float *v, char *line)
 {
 	char	**values;
@@ -31,6 +35,10 @@ bool	get_position_cy(float *v, char *line)
 	return (true);
 }
 
+/**
+ * Parses cylinder normal (nx,ny,nz) from a comma-separated string into v[3..5].
+ * Ensures each component is within [-1, 1]; rejects invalid input.
+ */
 bool	get_normal_cy(float *v, char *line)
 {
 	char	**values;
@@ -56,6 +64,10 @@ bool	get_normal_cy(float *v, char *line)
 	return (true);
 }
 
+/**
+ * Parses cylinder diameter from a string and stores radius in v[6] (diameter/2).
+ * Rejects negative values and invalid input.
+ */
 bool	get_radius_cy(float *v, char *line)
 {
 	float	d;
@@ -69,6 +81,10 @@ bool	get_radius_cy(float *v, char *line)
 	return (true);
 }
 
+/**
+ * Parses cylinder height from a string and stores it in v[7].
+ * Rejects negative values and invalid input.
+ */
 bool	get_height_cy(float *v, char *line)
 {
 	float	h;
@@ -82,6 +98,10 @@ bool	get_height_cy(float *v, char *line)
 	return (true);
 }
 
+/**
+ * Parses cylinder color (r,g,b) from a comma-separated string into v[8..10].
+ * Each channel must be within [0, 255]; rejects invalid input.
+ */
 bool	get_color_cy(float *v, char *line)
 {
 	char	**values;
