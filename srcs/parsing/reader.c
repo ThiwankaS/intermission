@@ -12,6 +12,10 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Returns true if the line should be treated as a blank/line-break entry.
+ * Used to ignore lines that contain no meaningful tokens.
+ */
 bool	line_break(char *line, int *index)
 {
 	int	i;
@@ -22,6 +26,10 @@ bool	line_break(char *line, int *index)
 	return (false);
 }
 
+/**
+ * Parses a single scene line and dispatches to the appropriate handler
+ * (A, L, C, sp, pl, cy). Returns true on success, false on bad/unknown input.
+ */
 bool	process_line(char *line, t_state *state)
 {
 	int	i;
@@ -50,6 +58,10 @@ bool	process_line(char *line, t_state *state)
 	return (!res);
 }
 
+/**
+ * Verifies the scene filename ends with the ".rt" extension.
+ * Returns true if the extension is correct.
+ */
 bool	valid_filename(char *filename)
 {
 	int	len;
@@ -62,6 +74,11 @@ bool	valid_filename(char *filename)
 	return (true);
 }
 
+/**
+ * Reads the entire file line by line, processing each with process_line().
+ * Stops and returns false on the first parsing error;
+ * true if all lines succeed.
+ */
 bool	read_content(int fd, t_state *state)
 {
 	char	*line;
@@ -85,6 +102,10 @@ bool	read_content(int fd, t_state *state)
 	return (true);
 }
 
+/**
+ * Validates the filename, opens the file, reads and parses its contents,
+ * and reports clear errors for bad extension, open failure, or bad data.
+ */
 bool	init_file_reader(char *filename, t_state *state)
 {
 	int	fd;
