@@ -24,6 +24,11 @@ void	position(t_tuple *pp, t_ray *r, float t)
 	pp->t[3] = 1.0f;
 }
 
+/**
+ * Initializes a hit record with infinite distance, no hit flag,
+ * and the given object.
+ * Used as a starting point before performing intersection tests.
+ */
 void	init_hit_object(t_hit *h, t_object *object)
 {
 	h->t = INFINITY;
@@ -31,6 +36,11 @@ void	init_hit_object(t_hit *h, t_object *object)
 	h->object = object;
 }
 
+/**
+ * Transforms a ray into an object's local space, normalizes its direction,
+ * and tests for intersections based on the object's type. If a closer hit
+ * than the current closest is found, updates the closest hit record.
+ */
 void	process_find_hit(t_object *object, t_ray *ray, t_hit *closest)
 {
 	t_ray	local_ray;
@@ -60,6 +70,11 @@ void	process_find_hit(t_object *object, t_ray *ray, t_hit *closest)
 	}
 }
 
+/**
+ * Iterates through all objects in the world and finds the closest intersection
+ * point between the given ray and any object. Returns the hit record containing
+ * the nearest intersection data, or no-hit if none found.
+ */
 t_hit	find_hit(t_world *world, t_ray *ray)
 {
 	t_hit		closest;
