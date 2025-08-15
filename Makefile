@@ -1,4 +1,4 @@
-NAME = miniRt
+NAME = miniRT
 
 # === LIBRARIES ===
 MLX42_DIR = MLX42
