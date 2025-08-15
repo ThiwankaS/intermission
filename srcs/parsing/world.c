@@ -12,6 +12,10 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Frees a NULL-terminated array of C strings and the array itself.
+ * Safe to call with NULL; does nothing in that case.
+ */
 void	free_split(char **array)
 {
 	int	i;
@@ -27,6 +31,11 @@ void	free_split(char **array)
 	free(array);
 }
 
+/**
+ * Initializes global ambient settings in the world from parsed values.
+ * Validates ranges (ambient in [0,1], color channels in [0,255]) and
+ * prevents re-initialization.
+ */
 int	init_world(t_world *world, float *v)
 {
 	if (world->set_ambient)
@@ -45,6 +54,11 @@ int	init_world(t_world *world, float *v)
 	return (0);
 }
 
+/**
+ * Returns true if the character is allowed in a numeric token:
+ * digit, '-' sign, or '.' dot.
+ * Used by value-list validation to quickly filter invalid characters.
+ */
 bool	valid_char(char c)
 {
 	if (c >= '0' && c <= '9')
@@ -56,6 +70,12 @@ bool	valid_char(char c)
 	return (false);
 }
 
+/**
+ * Validates a comma-separated triple "x,y,z" with only numeric chars,
+ * '-' and '.'.
+ * Requires exactly two commas and allows end-of-string or whitespace after
+ * the triple.
+ */
 int	values_validation(char *str)
 {
 	int	i;
@@ -81,6 +101,11 @@ int	values_validation(char *str)
 	return (0);
 }
 
+/**
+ * Parses ambient light ratio and RGB color from the line, validates them,
+ * and stores the normalized values in the world.
+ * Returns nonzero on malformed input.
+ */
 int	set_world(char *line, t_state *state, int *index)
 {
 	char	**items;
