@@ -19,6 +19,11 @@ bool	get_height_cy(float *v, char *line);
 bool	get_color_cy(float *v, char *line);
 t_mat	rotate_axis(t_tuple *axis, float angle);
 
+/**
+ * Creates a rotation matrix to align a cylinder's default up vector (v0) with
+ * its specified normal vector. If the axis length is zero, rotation is either
+ * identity or 180 degrees depending on direction.
+ */
 t_mat	set_rotate_matrix(t_object *s, t_tuple *axis, t_tuple *v0)
 {
 	float	angel;
@@ -40,6 +45,12 @@ t_mat	set_rotate_matrix(t_object *s, t_tuple *axis, t_tuple *v0)
 	return (rotate);
 }
 
+/**
+ * Builds the full transformation matrix for a cylinder object, including
+ * scaling by radius/height, rotation to match the normal vector,
+ * and translation to its position.
+ * Also computes its inverse and inverse-transpose matrices.
+ */
 void	creating_cylinder_object(t_object *s, float radius)
 {
 	t_tuple	v0;
@@ -59,6 +70,11 @@ void	creating_cylinder_object(t_object *s, float radius)
 	s->invs_trans = matrix_transpose(&s->invs);
 }
 
+/**
+ * Initializes a cylinder object's properties from parsed values and adds it
+ * to the world's object list. Sets material properties
+ * and transformation defaults.
+ */
 void	set_cylinder_values(t_state *state, t_object *s, float *v)
 {
 	if (!state || !s)
@@ -85,6 +101,12 @@ void	set_cylinder_values(t_state *state, t_object *s, float *v)
 	state->world.obj_count++;
 }
 
+/**
+ * Parses cylinder parameters (position, normal, radius, height, color) from
+ * a line of text, initializes the object, sets its values,
+ * and applies transformations.
+ * Returns nonzero on error.
+ */
 int	set_cylinder(char *line, t_state *state, int *index)
 {
 	char		**items;
