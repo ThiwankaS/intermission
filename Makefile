@@ -51,7 +51,7 @@ SRCS = \
 	srcs/render/draw.c\
 	srcs/render/hook.c\
 	srcs/render/window.c\
-	srcs/render/resize.c\
+	srcs/render/resize1.c\
 	srcs/render/resize2.c\
 	srcs/render/move1.c\
 	srcs/render/move2.c\
