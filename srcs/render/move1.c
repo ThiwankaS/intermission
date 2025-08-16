@@ -12,7 +12,6 @@
 
 #include "../../include/miniRt.h"
 
-
 /**
  * Moves the scene's light source by one unit along the selected axis based
  * on key input
