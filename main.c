@@ -12,6 +12,10 @@
 
 #include "include/miniRt.h"
 
+/**
+ * Initializes camera with size and fov, and resets transforms.
+ * Computes half sizes and pixel_size; fov is in radians.
+*/
 void	camera_init(t_camera *camera, int hsize, int vsize, float fov)
 {
 	float	half_view;
@@ -37,6 +41,11 @@ void	camera_init(t_camera *camera, int hsize, int vsize, float fov)
 	camera->pixel_size = (camera->half_width * 2.0f) / camera->hsize;
 }
 
+/**
+ * Sets default world, camera, and interaction state.
+ * Clears object list, zeroes lights, sets colors to white.
+ * Resets flags and selection to defaults.
+*/
 void	default_state(t_state *state)
 {
 	state->world.ambient = 0.0f;
@@ -56,6 +65,11 @@ void	default_state(t_state *state)
 	state->selected_object = NULL;
 }
 
+/**
+ * Allocates state, applies defaults, and parses args.
+ * On a valid .rt file, shows help and renders the scene.
+ * On bad args, prints an error; always cleans up.
+*/
 int	main(int argc, char *argv[])
 {
 	t_state	*state;
