@@ -12,6 +12,11 @@
 
 #include "../../include/miniRt.h"
 
+/**
+ * Resizes the sphere with arrow keys (UP increases, DOWN decreases).
+ * Rebuilds its transform after change.
+ * Returns SUCCESS on handled key, otherwise FAILURE.
+*/
 int	resize_sphere(mlx_key_data_t key, t_object *obj)
 {
 	float	step;
@@ -29,6 +34,11 @@ int	resize_sphere(mlx_key_data_t key, t_object *obj)
 	return (SUCCESS);
 }
 
+/**
+ * Moves the sphere by small steps with W/A/S/D/Z/X keys.
+ * Rebuilds its transform after a successful move.
+ * Returns SUCCESS on handled key, otherwise FAILURE.
+*/
 int	move_sphere(mlx_key_data_t key, t_object *obj)
 {
 	float	step;
