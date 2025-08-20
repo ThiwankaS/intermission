@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 04:38:17 by tsomacha          #+#    #+#             */
-/*   Updated: 2025/07/22 21:50:00 by tsomacha         ###   ########.fr       */
+/*   Updated: 2025/08/20 11:41:59 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int	set_light(char *line, t_state *state, int *index)
 		return (free_split(items), 1);
 	if (!set_light_diffuse(&state->world, items[1]))
 		return (free_split(items), 1);
-	if (!set_light_color(&state->world, items[2]))
+	if (items[2] && !set_light_color(&state->world, items[2]))
 		return (free_split(items), 1);
 	state->world.set_light = true;
 	free_split(items);
