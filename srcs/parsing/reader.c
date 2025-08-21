@@ -81,23 +81,27 @@ bool	valid_filename(char *filename)
  */
 bool	read_content(int fd, t_state *state)
 {
-	char	*line;
+		char	*line;
 
 	line = NULL;
 	line = get_next_line(fd);
 	if (!line)
 		return (false);
-	while (true)
+	while (line)
 	{
 		if (!process_line(line, state))
 		{
 			free(line);
+			line = get_next_line(fd);
+			while (line)
+			{
+				free(line);
+				line = get_next_line(fd);
+			}
 			return (false);
 		}
 		free(line);
 		line = get_next_line(fd);
-		if (!line)
-			break ;
 	}
 	return (true);
 }
