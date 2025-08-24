@@ -84,8 +84,8 @@ void	set_sphere_values(t_state *state, t_object *s, float *v)
 	vector(&s->norm_v, 0.0f, 0.0f, 0.0f);
 	s->ambient = &state->world.ambient;
 	s->diffuse = &state->world.diffuse;
-	s->specular = 0.0f;
-	s->shininess = 200.0f;
+	s->specular = 0.01f;
+	s->shininess = 50.0f;
 	s->next = NULL;
 	creating_sphere_object(s, v[3]);
 	add_object(state, &s);

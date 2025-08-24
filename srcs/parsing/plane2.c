@@ -54,13 +54,8 @@ void	creating_plane_object(t_object *s)
 
 	vector(&v0, 0, 1, 0);
 	axis = cross(&v0, &s->norm_v);
-	if (tuple_magnitute(&axis) == 0)
-	{
-		if (dot(&v0, &s->norm_v) > 0)
-			rotate = identity();
-		else
-			rotate = rotate_x(M_PI);
-	}
+	if (tuple_magnitute(&axis) < EPSILON)
+		rotate = rotate_x(M_PI);
 	else
 	{
 		axis = normalize(&axis);
