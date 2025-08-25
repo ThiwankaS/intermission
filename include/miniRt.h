@@ -59,7 +59,7 @@ void		clean_up(t_state *state);
 void		add_object(t_state *state, t_object **s);
 void		update_view(t_camera *camera, t_tuple *p, t_tuple *d);
 bool		ft_isspace(char c);
-float		ft_atof(const char *str);
+bool		ft_atof(const char *str, float *result);
 int			set_world(char *line, t_state *state, int *index);
 int			set_light(char *line, t_state *state, int *index);
 int			set_camera(char *line, t_state *state, int *index);
@@ -67,6 +67,5 @@ int			set_sphere(char *line, t_state *state, int *index);
 int			set_plane(char *line, t_state *state, int *index);
 int			set_cylinder(char *line, t_state *state, int *index);
 bool		init_file_reader(char *filename, t_state *state);
-void		print_things(t_state *state);
 
 #endif
