@@ -17,9 +17,10 @@
  * false otherwise.
  * Used by the float parser to skip leading whitespace safely.
  */
-bool	ft_isspace(char c)
+bool	ft_isspace(const char c)
 {
-	if (c == ' ' || (c >= 9 && c <= 13))
+	if (c == ' ' || c == '\f' || c == '\n' || c == '\r'
+		|| c == '\t' || c == '\v')
 		return (true);
 	return (false);
 }
@@ -29,17 +30,23 @@ bool	ft_isspace(char c)
  * Advances the input pointer past consecutive digits
  * and returns the accumulated value.
  */
-float	get_interger_part(const char **str)
+bool	get_interger_part(const char **str, float *result)
 {
-	float	result;
+	int	count;
 
-	result = 0.0;
+	count = 0;
+	*result = 0.0;
 	while (str && *str && **str >= '0' && **str <= '9')
 	{
-		result = result * 10.0 + (**str - '0');
+		*result = *result * 10.0 + (**str - '0');
 		(*str)++;
+		count++;
+		if (count > 4)
+			return (false);
 	}
-	return (result);
+	if (*result > 4095.0f)
+		return (false);
+	return (true);
 }
 
 /**
@@ -47,20 +54,24 @@ float	get_interger_part(const char **str)
  * Accumulates digits with decreasing powers of ten,
  * advancing the pointer as it reads.
  */
-float	get_fractional_part(const char **str)
+bool	get_fractional_part(const char **str, float *fraction)
 {
-	float	fraction;
 	float	divisor;
+	int		count;
 
-	fraction = 0.0;
+	*fraction = 0.0;
 	divisor = 10.0;
-	while (str && *str && **str >= '0' && **str <= '9')
+	count = 0;
+	if (str && *str && **str == '.')
+		(*str)++;
+	while (str && *str && **str >= '0' && **str <= '9' && count < 3)
 	{
-		fraction += (**str - '0') / divisor;
+		*fraction = *fraction + (**str - '0') / divisor;
 		divisor *= 10.0;
 		(*str)++;
+		count++;
 	}
-	return (fraction);
+	return (true);
 }
 
 /**
@@ -69,31 +80,29 @@ float	get_fractional_part(const char **str)
  * Supports only integral and fractional parts (no exponent);
  * stops at the first non-digit.
  */
-float	ft_atof(const char *str)
+bool	ft_atof(const char *str, float *result)
 {
-	float	result;
 	float	fraction;
 	bool	is_negative;
 
-	result = 0.0;
 	fraction = 0.0;
 	is_negative = false;
 	while (str && *str && ft_isspace(*str))
 		str++;
+	if (!str || *str == '\0')
+		return (false);
 	if (str && *str && (*str == '-' || *str == '+'))
 	{
 		if (*str == '-')
 			is_negative = true;
 		str++;
 	}
-	result = get_interger_part(&str);
-	if (str && *str && *str == '.')
-	{
-		str++;
-		fraction = get_fractional_part(&str);
-	}
-	result += fraction;
+	if (!get_interger_part(&str, result))
+		return (false);
+	if (!get_fractional_part(&str, &fraction))
+		return (false);
+	*result += fraction;
 	if (is_negative)
-		result = -result;
-	return (result);
+		*result = -(*result);
+	return (true);
 }
