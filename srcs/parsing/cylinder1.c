@@ -12,11 +12,8 @@
 
 #include "../../include/miniRt.h"
 
-bool	get_position_cy(float *v, char *line);
-bool	get_normal_cy(float *v, char *line);
 bool	get_radius_cy(float *v, char *line);
 bool	get_height_cy(float *v, char *line);
-bool	get_color_cy(float *v, char *line);
 t_mat	rotate_axis(t_tuple *axis, float angle);
 
 /**
@@ -115,20 +112,20 @@ int	set_cylinder(char *line, t_state *state, int *index)
 
 	items = ft_split(&line[*index], ' ');
 	if (!items)
-		return (free_split(items), 1);
-	if (!get_position_cy(v, items[0]))
-		return (free_split(items), 1);
-	if (!get_normal_cy(v, items[1]))
-		return (free_split(items), 1);
+		return (free_split(items), 0);
+	if (!extract_position(items[0], &v[0], &v[1], &v[2]))
+		return (free_split(items), 0);
+	if (!extract_normal_v(items[1], &v[3], &v[4], &v[5]))
+		return (free_split(items), 0);
 	if (!get_radius_cy(v, items[2]))
-		return (free_split(items), 1);
+		return (free_split(items), 0);
 	if (!get_height_cy(v, items[3]))
-		return (free_split(items), 1);
-	if (!get_color_cy(v, items[4]))
-		return (free_split(items), 1);
+		return (free_split(items), 0);
+	if (!extract_color(items[4], &v[8], &v[9], &v[10]))
+		return (free_split(items), 0);
 	s = init_object();
 	set_cylinder_values(state, s, v);
 	creating_cylinder_object(s, v[6]);
 	free_split(items);
-	return (0);
+	return (1);
 }
