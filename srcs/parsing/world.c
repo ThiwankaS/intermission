@@ -46,6 +46,10 @@ int	init_world(t_world *world, float *v)
 	return (1);
 }
 
+/**
+ * read, parse ambient color brigthness from the map and validate the
+ * value
+*/
 bool	get_ambient_brigthness(float *v, const char *line)
 {
 	float	d;
