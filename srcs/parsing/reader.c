@@ -30,15 +30,17 @@ bool	line_break(char *line, int *index)
  * Parses a single scene line and dispatches to the appropriate handler
  * (A, L, C, sp, pl, cy). Returns true on success, false on bad/unknown input.
  */
-bool	process_line(char *line, t_state *state)
+int	process_line(char *line, t_state *state)
 {
 	int	i;
 	int	res;
 
+	if (!line)
+		return (0);
+	if (ft_strncmp(line, "\n", ft_strlen(line)) == 0)
+		return (1);
 	i = 0;
 	res = 0;
-	if (!line)
-		return (false);
 	while (line && line[i] && line[i] != ' ')
 		i++;
 	if (i != 0 && ft_strncmp(line, "A", i) == 0)
@@ -53,9 +55,7 @@ bool	process_line(char *line, t_state *state)
 		res = set_plane(line, state, &i);
 	else if (i != 0 && ft_strncmp(line, "cy", i) == 0)
 		res = set_cylinder(line, state, &i);
-	else if (i != 0 && !line_break(line, &i))
-		return (false);
-	return (!res);
+	return (res);
 }
 
 /**
@@ -81,7 +81,7 @@ bool	valid_filename(char *filename)
  */
 bool	read_content(int fd, t_state *state)
 {
-		char	*line;
+	char	*line;
 
 	line = NULL;
 	line = get_next_line(fd);
@@ -89,7 +89,7 @@ bool	read_content(int fd, t_state *state)
 		return (false);
 	while (line)
 	{
-		if (!process_line(line, state))
+		if (!extract_data(line, state))
 		{
 			free(line);
 			line = get_next_line(fd);
