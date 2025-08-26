@@ -46,22 +46,6 @@ int	init_world(t_world *world, float *v)
 	return (1);
 }
 
-/**
- * Returns true if the character is allowed in a numeric token:
- * digit, '-' sign, or '.' dot.
- * Used by value-list validation to quickly filter invalid characters.
- */
-bool	valid_char(char c)
-{
-	if (c >= '0' && c <= '9')
-		return (true);
-	if (c == '-')
-		return (true);
-	if (c == '.')
-		return (true);
-	return (false);
-}
-
 bool	get_ambient_brigthness(float *v, const char *line)
 {
 	float	d;
