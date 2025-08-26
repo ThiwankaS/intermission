@@ -37,15 +37,14 @@ SRCS = \
 	srcs/graphics/world.c\
 	srcs/error/file.c\
 	srcs/parsing/atof.c\
-	srcs/parsing/reader.c\
+	srcs/parsing/reader1.c\
+	srcs/parsing/reader2.c\
 	srcs/parsing/world.c\
 	srcs/parsing/light.c\
 	srcs/parsing/camera.c\
 	srcs/parsing/common.c\
-	srcs/parsing/sphere1.c\
-	srcs/parsing/sphere2.c\
-	srcs/parsing/plane1.c\
-	srcs/parsing/plane2.c\
+	srcs/parsing/sphere.c\
+	srcs/parsing/plane.c\
 	srcs/parsing/cylinder1.c\
 	srcs/parsing/cylinder2.c\
 	srcs/render/draw.c\
