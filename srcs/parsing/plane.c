@@ -107,7 +107,6 @@ void	set_plane_values(t_state *state, t_object *s, float *v)
  */
 int	set_plane(char *line, t_state *state, int *index)
 {
-	printf("%s : %s : %d\n", line, __FILE__, __LINE__);
 	char		**items;
 	float		v[9];
 	t_object	*s;
