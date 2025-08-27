@@ -6,7 +6,7 @@
 /*   By: tsomacha <tsomacha@student.hive.fi>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 04:38:29 by tsomacha          #+#    #+#             */
-/*   Updated: 2025/07/29 20:47:58 by tsomacha         ###   ########.fr       */
+/*   Updated: 2025/08/27 15:38:28 by tsomacha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ int	set_camera(char *line, t_state *state, int *index)
 	float	fov;
 
 	if (state->camera.set_camera)
-		return (1);
+		return (0);
 	items = ft_split(&line[*index], ' ');
 	if (!items)
 		return (free_split(items), 0);
