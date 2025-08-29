@@ -22,10 +22,14 @@ void	update_view(t_camera *camera, t_tuple *p, t_tuple *d)
 	t_tuple	forward;
 	t_tuple	to;
 	t_tuple	up;
+	float	dot_product;
 
 	point(&from, p->t[0], p->t[1], p->t[2]);
 	vector(&forward, d->t[0], d->t[1], d->t[2]);
 	vector(&up, 0.0f, 1.0f, 0.0f);
+	dot_product = dot(&forward, &up);
+	if (fabsf(dot_product) > 0.999f)
+		vector(&up, 0.0f, 0.0f, 1.0f);
 	up = normalize(&up);
 	to = tuple_add(&from, &forward);
 	view_trans(camera, &from, &to, &up);
